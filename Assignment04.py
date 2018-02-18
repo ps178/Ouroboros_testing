@@ -1,125 +1,126 @@
-# This is our first assignment as a group
+
+# Import packages 
 
 try: 
     import numpy as np
 except ImportError:
-    print("Could not import numpy")
+    print("Could not import numpy") 
 
 try:
-    import logging
+    import logging 
 except ImportError:
     print("Could not import logging")
 
-import sphinx 
+try:
+    import sphinx
+except ImportError:
+    print("Could not import sphinx")
+
+logging.basicConfig(filename="OuroborosAssignment06log.txt", format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
 
-def main():
-    logging.basicConfig(filename="OuroborosAssignment04log.txt", format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
-    logging.info('Started')
-    return_sum(my_list)
-    return_min_max(my_list)
-    return_max_difference(my_list)
-    logging.info('Finished')
+# Create Class
+class Number_Calc:
+    """This is a Number_Calc class.
 
-    
-def return_min_max(my_list):
-    """ Function returns the max and min value of the input list
-
-    :param my_list: a list of numbers
-    :returns max_min: the max and min values in the list of numbers
-    :raises TypeError: can only input a list of numbers
-    :raises ValueError: can not input an empty list
+    Attributes: sum of list, max min values of list, and max difference in list
 
     """
-    if np.iscomplexobj(my_list) is True:
-        logging.warning('There are imaginary numbers in your list')
-    try:
-        np.max(my_list)
-    except TypeError:
-        logging.debug('my_list is {}'.format(my_list))
-        print("You did not input a list of numbers")
-    except ValueError:
-        print("The input type is correct but inappropriate")  
-    
-    max_min = ((np.max(my_list), np.min(my_list)))
-    return max_min
-    
-  
-def return_sum(my_list):
+    def __init__(self, My_List = [None]):
+        self.My_List = My_List #save the list as an attribute
+        self.Sum = None
+        self.Max_Min = None
+        self.Max_Difference = None 
 
-    """
-    :param my_list: list containing real numbers to be summed
-    :raises: TypeError if list cannot be summed
-    :raises: ValueError if no elements in given list
-    :returns: sum of all elements in the list
-    """
-    import logging
-    logging.basicConfig(filename='sumlog.txt', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
-    with open('sumlog.txt', 'w'):
-        pass
-    logging.info('Function starting')
+        self.Sum_Method()
+        self.Max_Min_Method()
+        self.Max_Difference_Method()
 
-    try:
-        np.sum(my_list)
-    except TypeError:
-        print('Input list should be numbers')        
-        logging.debug('Given list does not contain summable elements')
-    
-    if len(my_list) == 0:
-        raise ValueError('No elements in list to be summed')
-        logging.warning('No elements present to be summed')
+    def Sum_Method(self):   #Module Function 1
+        """Function add all the numbers in the list
+
+        :param my_list: list containing real numbers to be summed
+        :raises: TypeError if list cannot be summed
+        :raises: ValueError if no elements in given list
+        :returns: sum of all elements in the list
+
+        """
+        logging.info("Calculating sum")
+        try:
+            np.sum(self.My_List)
+        except TypeError:
+            print('Input list should be numbers')        
+            logging.debug('Given list does not contain summable elements')
+        if len(self.My_List) == 0:
+            raise ValueError('No elements in list to be summed')
+            logging.warning('No elements present to be summed')
+        sum = 0
+        for elem in self.My_List:
+            sum += elem
+        logging.info('Elements have been summed')
+        self.Sum = sum
+
+    def Max_Min_Method(self):   #Module Function 2
+        """ Function returns the max and min value of the input list
+
+        :param my_list: a list of numbers
+        :returns max_min: the max and min values in the list of numbers
+        :raises TypeError: can only input a list of numbers
+        :raises ValueError: can not input an empty list
+
+        """
+        logging.info("Calculating max and min")
+        if np.iscomplexobj(self.My_List) is True:
+            logging.warning('There are imaginary numbers in your list')
+
+        try:
+            np.max(self.My_List)
+        except TypeError:
+            logging.debug('List is {}'.format(self.My_List))
+            print("You did not input a list of numbers")
+            self.Max_Min = None
+        except ValueError:
+            print("The input type is correct but inappropriate")
+            self.Max_Min = None
+
+        self.Max_Min = ((np.max(self.My_List), np.min(self.My_List)))
+	
+    def Max_Difference_Method(self):  #Module Function 3
+
+        """Function will return maximum difference between adjacent numbers.
+
+        Function takes in the inputted list of values, splits it into two arrays to calculate the difference between
+        adjacent values, takes the absolute values of the differences to disregard positioning, and then outputs the
+        maximum value.
+
+        :param input_list: List of numbers
+        :return: Maximum difference
+        :raises ImportError: Check if numpy is installed or virtual env is established
+        :raises TypeError: Input not given as a list of values
+        :raises ValueError: Can occur when only 1 number is given in the list
+        """
+       
+        logging.info("Calculating max difference")
+
+        try:
+            if any(self.My_List) < 0:  #included to use warning
+                logging.warning('Negative values in list')
+                logging.debug('Values {}'.format(self.My_List))
+            input_list = np.array(self.My_List)
+            diffs = abs(np.diff(self.My_List))
+            max_val = max(diffs)
+
+            self.Max_Difference = max_val
+
+        except ImportError:  # redundancy
+            logging.debug('Values {}'.format(self.My_List))
+            logging.error('ImportError: Check if numpy is in virtualenv')
+        except TypeError:
+            logging.debug('Values {}'.format(self.My_List))
+            logging.debug(self.My_List)
+            logging.error('TypeError: Check if input is a list of values')
+        except ValueError:
+            logging.debug('Values {}'.format(self.My_List))
+            logging.error('ValueError: Add more numbers to the list')
 
 
-    sum = 0
-    for elem in my_list:
-        sum += elem
-    logging.info('Elements have been summed')
-    return sum
-
-
-def return_max_difference(input_list):
-    """Function will return maximum difference between adjacent numbers.
-
-    Function takes in the inputted list of values, splits it into two arrays to calculate the difference between
-    adjacent values, takes the absolute values of the differences to disregard positioning, and then outputs the
-    maximum value.
-
-    :param input_list: List of numbers
-    :return: Maximum difference
-    :raises ImportError: Check if numpy is installed or virtual env is established
-    :raises TypeError: Input not given as a list of values
-    :raises ValueError: Can occur when only 1 number is given in the list
-    """
-    # Setup log
-    logging.basicConfig(filename='fn3log.txt', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s',
-                        datefmt='%m/%d/%Y %I:%M:%S %p')
-    # Function
-    try:
-        logging.info('Start fn')
-        if any(input_list) < 0:  #included to use warning
-            logging.warning('Negative values in list')
-            logging.debug('Values {}'.format(input_list))
-        input_list = np.array(input_list)
-        diffs = abs(np.diff(input_list))
-        max_val = max(diffs)
-
-        logging.info('Max val: {}'.format(max_val))
-        return max_val
-
-    except ImportError:  # redundancy
-        logging.debug('Values {}'.format(input_list))
-        logging.error('ImportError: Check if numpy is in virtualenv')
-        #print('Check if numpy is in virtualenv')
-    except TypeError:
-        logging.debug('Values {}'.format(input_list))
-        logging.debug(input_list)
-        logging.error('TypeError: Check if input is a list of values')
-        #print('Check if input is a list of values')
-    except ValueError:
-        logging.debug('Values {}'.format(input_list))
-        logging.error('ValueError: Add more numbers to the list')
-        #print('Add more numbers to the list')
-
-
-if __name__ == "__main__":
-    main()
