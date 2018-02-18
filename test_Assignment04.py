@@ -4,56 +4,49 @@ import pytest
 
 
 def test_sum():
-    from Assignment04 import return_sum
-    test1 = return_sum([1,3,5,7,9])
-    test2 = return_sum([-2,-5,-6,-1])
-    test3 = return_sum([4,-6,9,-1])
-    test4 = return_sum([2.2, 5.1 ,9.1, 1.2])
-    test5 = return_sum([-1.1, -5.2, -1.4, -3.8])
-    test6 = return_sum([-1.1,2.2,-3.1])
-    assert test1 == 25
-    assert test2 == -14
-    assert test3 == 6
-    assert test4 == pytest.approx(17.6)
-    assert test5 == pytest.approx(-11.5)
-    assert test6 == pytest.approx(-2)
+    from Assignment04 import Number_Calc
+    test_input_list = ([1,3,5,7,9],[-2,-5,-6,-1],[4,-6,9,-1],[2.2,5.1,9.1,1.2],[-1.1,-5.2,-1.4,-3.8],[-1.1,2.2,-3.1])
+    test_output_values = ((25),(-14),(6),(17.6),(-11.5),(-2))
+    
+    for count, elem in enumerate(test_input_list):
+        trial = Number_Calc(My_List = (elem))
+        assert trial.Sum == pytest.approx(test_output_values[count])
+
     with pytest.raises(TypeError):
-        return_sum(['hello', 'hi'])
+        trial_Error = Number_Calc(My_List =['hello', 'hi'])
     with pytest.raises(ValueError):
-        return_sum([])
+        trial_Error = Number_Calc(My_List = [])
     
 # Second function
-def test_return_min_max():
-    from Assignment04 import return_min_max
+def test_min_max():
+    from Assignment04 import Number_Calc
     test_input_list = ([-1,5,8,100],[5,-8,9,45,88,34,65],[-5,8.234,-99023,342,9.452])
     test_output_values = ((100,-1),(88,-8),(342,-99023))
 
-    for count, elem in enumerate(test_input_list):   #enuerate itirate and gives the index
-        min_max_output = return_min_max(elem)
-        assert min_max_output == test_output_values[count]
-        assert isinstance(min_max_output, tuple) == True 
+    for count, elem in enumerate(test_input_list):   #enumerate itirate and gives the index
+        trial = Number_Calc(My_List = (elem))
+        assert trial.Max_Min == test_output_values[count]
+        assert isinstance(trial.Max_Min, tuple) == True 
 
-def test_return_min_max_exceptions():
-    from Assignment04 import return_min_max
+def test_min_max_exceptions():
+    from Assignment04 import Number_Calc
     with pytest.raises(TypeError):
-        return_min_max(['string','why'])
+        trial = Number_Calc(My_list = ['string','why'])
     with pytest.raises(ValueError):
-        return_min_max([])
+        trial = Number_Calc(My_List = [])
 
 
 def test_max_diff():
-    from Assignment04 import return_max_difference
+    from Assignment04 import Number_Calc
     test_input_list = [[10, 8, 5, 17, 16], [2, -7, 1.5]]
     test_output_value = [12, 9]
     for n, t in enumerate(test_input_list):
-        test_output = return_max_difference(t)
-        assert test_output == test_output_value[n]
+        trial = Number_Calc(My_List = (t))
+        assert trial.Max_Difference == test_output_value[n]
 
-    with pytest.raises(ImportError):  # Test ImportError?
-        import scipy
     with pytest.raises(TypeError):  # Type error when None inputted
-        return_max_difference()
-        return_max_difference(['sing'])
+        trial = Number_Calc(My_list = [])
+        trial2 = Number_Calc(My_List = ['sing'])
     with pytest.raises(ValueError):  # ValueError can occur when only 1 number given
         max([])  # This is where it fails in return_max_difference
 
